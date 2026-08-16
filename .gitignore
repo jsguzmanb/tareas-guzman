@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+
+# db files (sqlite is gone, but just in case)
+*.db
+*.db-journal
+
+# auto-installed CLI skill caches, not part of the app
+/.agents
+/.windsurf
+/.claude/skills
+skills-lock.json
