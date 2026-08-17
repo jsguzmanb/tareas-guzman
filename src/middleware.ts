@@ -5,7 +5,7 @@ export const config = {
   matcher: ["/((?!login|api/login|api/cron|_next/static|_next/image|favicon.ico|manifest.json|icons).*)"],
 };
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get(COOKIE_NAME)?.value;
   const valid = token ? await verifySessionToken(token) : false;
 
