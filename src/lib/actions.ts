@@ -113,6 +113,15 @@ export async function updateTaskContext(taskId: string, context: string) {
   revalidatePath("/next-actions");
 }
 
+export async function updateTaskTentativeDate(taskId: string, tentativeDate: string) {
+  await prisma.task.update({
+    where: { id: taskId },
+    data: { tentativeDate: tentativeDate ? new Date(tentativeDate) : null },
+  });
+  revalidatePath("/next-actions");
+  revalidatePath("/projects");
+}
+
 export async function createProject(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   if (!name) return;

@@ -41,6 +41,7 @@ export default async function NextActionsPage() {
               context: task.context,
               projectId: task.projectId,
               createdAt: task.createdAt,
+              tentativeDate: task.tentativeDate,
             }}
             projects={projects}
           />

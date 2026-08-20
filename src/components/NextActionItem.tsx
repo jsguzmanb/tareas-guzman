@@ -8,6 +8,7 @@ import {
   deleteTask,
   updateTaskProject,
   updateTaskContext,
+  updateTaskTentativeDate,
 } from "@/lib/actions";
 
 type Project = { id: string; name: string };
@@ -32,10 +33,14 @@ export default function NextActionItem({
     context: string | null;
     projectId: string | null;
     createdAt: Date;
+    tentativeDate?: Date | null;
   };
   projects: Project[];
 }) {
   const [context, setContext] = useState(task.context ?? "");
+  const [tentativeDate, setTentativeDate] = useState(
+    task.tentativeDate ? task.tentativeDate.toISOString().slice(0, 10) : ""
+  );
   const [isPending, startTransition] = useTransition();
   const { label, color } = ageBadge(task.createdAt);
 
@@ -98,6 +103,16 @@ export default function NextActionItem({
           onBlur={() => startTransition(() => updateTaskContext(task.id, context))}
           placeholder="contexto (opcional)"
           className="border border-neutral-200 rounded px-2 py-1 bg-neutral-50 text-neutral-700 w-40"
+        />
+        <input
+          type="date"
+          value={tentativeDate}
+          onChange={(e) => {
+            setTentativeDate(e.target.value);
+            startTransition(() => updateTaskTentativeDate(task.id, e.target.value));
+          }}
+          title="Fecha tentativa (opcional, solo informativa)"
+          className="border border-neutral-200 rounded px-2 py-1 bg-neutral-50 text-neutral-500"
         />
       </div>
     </li>
