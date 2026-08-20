@@ -40,6 +40,7 @@ export default async function NextActionsPage() {
               title: task.title,
               context: task.context,
               projectId: task.projectId,
+              createdAt: task.createdAt,
             }}
             projects={projects}
           />
