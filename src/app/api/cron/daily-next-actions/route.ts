@@ -38,22 +38,29 @@ export async function GET(request: NextRequest) {
 
   const resend = new Resend(apiKey);
 
-  const items = tasks
-    .map((task) => {
-      const days = daysSince(task.createdAt);
-      const age = days <= 0 ? "hoy" : days === 1 ? "hace 1 día" : `hace ${days} días`;
-      return `<li>${task.title} <span style="color:#999">(${age})</span></li>`;
-    })
-    .join("");
+  const renderTask = (task: (typeof tasks)[number]) => {
+    const days = daysSince(task.createdAt);
+    const age = days <= 0 ? "hoy" : days === 1 ? "hace 1 día" : `hace ${days} días`;
+    return `<li>${task.title} <span style="color:#999">(${age})</span></li>`;
+  };
+
+  const suggested = tasks.slice(0, 3);
+  const rest = tasks.slice(3);
+
+  const restBlock =
+    rest.length > 0
+      ? `<p>Y ${rest.length} más:</p><ul>${rest.map(renderTask).join("")}</ul>`
+      : "";
 
   await resend.emails.send({
     from: "Tareas <onboarding@resend.dev>",
     to,
     subject: `Tus ${tasks.length} next actions de hoy`,
     html: `
-      <p>Esto es lo que tienes activo en Next Actions:</p>
-      <ul>${items}</ul>
-      <p><a href="${appUrl}/next-actions">Abrir Next Actions</a></p>
+      <p>Empieza por estas, son las más viejas:</p>
+      <ul>${suggested.map(renderTask).join("")}</ul>
+      ${restBlock}
+      <p><a href="${appUrl}/focus">Abrir modo Ahora</a></p>
     `,
   });
 

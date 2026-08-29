@@ -62,6 +62,7 @@ export async function sendToSomeday(taskId: string) {
   revalidatePath("/next-actions");
   revalidatePath("/someday");
   revalidatePath("/review");
+  revalidatePath("/focus");
 }
 
 export async function sendToInbox(taskId: string) {
@@ -73,6 +74,7 @@ export async function sendToInbox(taskId: string) {
   revalidatePath("/next-actions");
   revalidatePath("/someday");
   revalidatePath("/review");
+  revalidatePath("/focus");
 }
 
 export async function completeTask(taskId: string) {
@@ -85,6 +87,7 @@ export async function completeTask(taskId: string) {
   revalidatePath("/someday");
   revalidatePath("/review");
   revalidatePath("/projects");
+  revalidatePath("/focus");
 }
 
 export async function deleteTask(taskId: string) {
@@ -94,6 +97,7 @@ export async function deleteTask(taskId: string) {
   revalidatePath("/someday");
   revalidatePath("/review");
   revalidatePath("/projects");
+  revalidatePath("/focus");
 }
 
 export async function updateTaskProject(taskId: string, projectId: string | null) {

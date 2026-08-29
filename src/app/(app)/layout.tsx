@@ -1,9 +1,11 @@
 import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 import { prisma } from "@/lib/prisma";
+import { getCompletionStreak } from "@/lib/streak";
 
 const NAV = [
   { href: "/", label: "Inbox" },
+  { href: "/focus", label: "Ahora" },
   { href: "/next-actions", label: "Next Actions" },
   { href: "/projects", label: "Proyectos" },
   { href: "/someday", label: "Someday" },
@@ -11,7 +13,10 @@ const NAV = [
 ];
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const inboxCount = await prisma.task.count({ where: { status: "INBOX" } });
+  const [inboxCount, streak] = await Promise.all([
+    prisma.task.count({ where: { status: "INBOX" } }),
+    getCompletionStreak(),
+  ]);
 
   return (
     <div className="flex flex-col flex-1 min-h-screen bg-neutral-50">
@@ -28,7 +33,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               </Link>
             ))}
           </nav>
-          <LogoutButton />
+          <div className="flex items-center gap-3 shrink-0">
+            {streak > 0 && (
+              <span className="text-sm text-amber-600 whitespace-nowrap">
+                🔥 {streak} {streak === 1 ? "día" : "días"}
+              </span>
+            )}
+            <LogoutButton />
+          </div>
         </div>
       </header>
       {inboxCount > 0 && (
