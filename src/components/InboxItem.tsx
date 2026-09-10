@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { promoteToNextAction, sendToSomeday, deleteTask } from "@/lib/actions";
+import {
+  completeTask,
+  promoteToNextAction,
+  sendToSomeday,
+  deleteTask,
+} from "@/lib/actions";
 
 export default function InboxItem({ task }: { task: { id: string; title: string } }) {
   const [error, setError] = useState<string | null>(null);
@@ -11,6 +16,12 @@ export default function InboxItem({ task }: { task: { id: string; title: string 
     startTransition(async () => {
       const res = await promoteToNextAction(task.id);
       setError(res?.error ?? null);
+    });
+  }
+
+  function handleComplete() {
+    startTransition(async () => {
+      await completeTask(task.id);
     });
   }
 
@@ -28,9 +39,17 @@ export default function InboxItem({ task }: { task: { id: string; title: string 
 
   return (
     <li className="flex flex-col gap-1 border border-neutral-200 rounded-lg px-3 py-2 bg-white">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
         <span className="text-neutral-900">{task.title}</span>
-        <div className="flex gap-1 shrink-0">
+        <div className="flex flex-wrap gap-1 sm:shrink-0">
+          <button
+            onClick={handleComplete}
+            disabled={isPending}
+            title="Completar ahora (regla de los 2 minutos)"
+            className="text-xs px-2 py-1 rounded bg-green-700 text-white disabled:opacity-50"
+          >
+            Completar
+          </button>
           <button
             onClick={handlePromote}
             disabled={isPending}
