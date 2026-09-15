@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
 const MAX_TITLE_LENGTH = 500;
@@ -58,6 +59,8 @@ export async function POST(request: NextRequest) {
       title: true,
     },
   });
+
+  revalidatePath("/");
 
   return NextResponse.json({ ok: true, task }, { status: 201 });
 }

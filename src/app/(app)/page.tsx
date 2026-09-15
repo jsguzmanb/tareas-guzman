@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import InboxCapture from "@/components/InboxCapture";
 import InboxItem from "@/components/InboxItem";
+import RefreshOnFocus from "@/components/RefreshOnFocus";
 
 export default async function InboxPage() {
   const tasks = await prisma.task.findMany({
@@ -10,6 +11,7 @@ export default async function InboxPage() {
 
   return (
     <div className="flex flex-col gap-6">
+      <RefreshOnFocus />
       <div>
         <h1 className="text-xl font-semibold text-neutral-900 mb-2">Inbox</h1>
         <InboxCapture />
