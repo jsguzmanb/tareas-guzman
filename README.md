@@ -34,3 +34,24 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Captura con Siri y Atajos
+
+La ruta `POST /api/shortcuts/tasks` permite crear tareas en Inbox desde un
+Atajo de iPhone. Configura `SHORTCUTS_SECRET` con un valor largo y aleatorio en
+las variables de entorno locales y de Vercel.
+
+La solicitud debe incluir:
+
+```http
+Authorization: Bearer TU_SECRETO
+Content-Type: application/json
+```
+
+Y un cuerpo JSON con el texto dictado:
+
+```json
+{
+  "title": "Comprar leche"
+}
+```
