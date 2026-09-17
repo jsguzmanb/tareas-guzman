@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
   });
 
   revalidatePath("/");
+  revalidatePath("/", "layout");
 
   return NextResponse.json({ ok: true, task }, { status: 201 });
 }

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getTaskAgeInDays } from "@/lib/task-age";
 import InboxCapture from "@/components/InboxCapture";
 import InboxItem from "@/components/InboxItem";
 import NextActionItem from "@/components/NextActionItem";
@@ -16,7 +17,11 @@ export default async function ProjectDetailPage({
       where: { id },
       include: { tasks: { orderBy: { createdAt: "asc" } } },
     }),
-    prisma.project.findMany({ where: { archived: false }, orderBy: { name: "asc" } }),
+    prisma.project.findMany({
+      where: { archived: false },
+      orderBy: { name: "asc" },
+      select: { id: true, name: true },
+    }),
   ]);
 
   if (!project) notFound();
@@ -44,6 +49,8 @@ export default async function ProjectDetailPage({
                   title: task.title,
                   context: task.context,
                   projectId: task.projectId,
+                  ageInDays: getTaskAgeInDays(task.createdAt),
+                  tentativeDate: task.tentativeDate?.toISOString() ?? null,
                 }}
                 projects={projects}
               />

@@ -4,6 +4,10 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { NEXT_ACTION_LIMIT } from "@/lib/constants";
 
+function revalidateTaskViews() {
+  revalidatePath("/", "layout");
+}
+
 export async function createInboxTask(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
   if (!title) return;
@@ -19,6 +23,7 @@ export async function createInboxTask(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/projects");
+  revalidateTaskViews();
 }
 
 export async function createSomedayTask(formData: FormData) {
@@ -50,6 +55,8 @@ export async function promoteToNextAction(taskId: string) {
   revalidatePath("/next-actions");
   revalidatePath("/someday");
   revalidatePath("/review");
+  revalidatePath("/focus");
+  revalidateTaskViews();
   return { error: null };
 }
 
@@ -62,6 +69,8 @@ export async function sendToSomeday(taskId: string) {
   revalidatePath("/next-actions");
   revalidatePath("/someday");
   revalidatePath("/review");
+  revalidatePath("/focus");
+  revalidateTaskViews();
 }
 
 export async function sendToInbox(taskId: string) {
@@ -73,6 +82,8 @@ export async function sendToInbox(taskId: string) {
   revalidatePath("/next-actions");
   revalidatePath("/someday");
   revalidatePath("/review");
+  revalidatePath("/focus");
+  revalidateTaskViews();
 }
 
 export async function completeTask(taskId: string) {
@@ -85,6 +96,8 @@ export async function completeTask(taskId: string) {
   revalidatePath("/someday");
   revalidatePath("/review");
   revalidatePath("/projects");
+  revalidatePath("/focus");
+  revalidateTaskViews();
 }
 
 export async function deleteTask(taskId: string) {
@@ -94,6 +107,8 @@ export async function deleteTask(taskId: string) {
   revalidatePath("/someday");
   revalidatePath("/review");
   revalidatePath("/projects");
+  revalidatePath("/focus");
+  revalidateTaskViews();
 }
 
 export async function updateTaskProject(taskId: string, projectId: string | null) {
@@ -103,6 +118,8 @@ export async function updateTaskProject(taskId: string, projectId: string | null
   });
   revalidatePath("/next-actions");
   revalidatePath("/projects");
+  revalidatePath("/focus");
+  revalidateTaskViews();
 }
 
 export async function updateTaskContext(taskId: string, context: string) {
@@ -111,6 +128,25 @@ export async function updateTaskContext(taskId: string, context: string) {
     data: { context: context.trim() || null },
   });
   revalidatePath("/next-actions");
+  revalidatePath("/projects");
+  revalidatePath("/focus");
+  revalidateTaskViews();
+}
+
+export async function updateTaskTentativeDate(taskId: string, tentativeDate: string) {
+  const parsedDate = tentativeDate ? new Date(`${tentativeDate}T00:00:00.000Z`) : null;
+
+  if (parsedDate && Number.isNaN(parsedDate.getTime())) {
+    return;
+  }
+
+  await prisma.task.update({
+    where: { id: taskId },
+    data: { tentativeDate: parsedDate },
+  });
+  revalidatePath("/next-actions");
+  revalidatePath("/projects");
+  revalidateTaskViews();
 }
 
 export async function createProject(formData: FormData) {

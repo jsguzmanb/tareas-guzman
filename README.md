@@ -55,3 +55,21 @@ Y un cuerpo JSON con el texto dictado:
   "title": "Comprar leche"
 }
 ```
+
+## Recordatorios por correo
+
+Vercel ejecuta dos cron jobs definidos en `vercel.json`:
+
+- El top 5 diario de Next Actions a las 13:00 UTC.
+- La revisión semanal los viernes a las 14:00 UTC.
+
+Configura estas variables en el entorno de producción de Vercel:
+
+- `CRON_SECRET`: secreto usado por Vercel para autenticar los cron jobs.
+- `RESEND_API_KEY`: clave de la API de Resend.
+- `REMINDER_EMAIL_TO`: dirección que recibirá los recordatorios.
+- `REMINDER_EMAIL_FROM`: remitente verificado en Resend. Es opcional durante las pruebas.
+- `APP_URL`: URL pública estable de la aplicación. Es opcional en Vercel.
+
+El envío diario es idempotente durante 24 horas para evitar duplicados si Vercel
+repite una ejecución. Si no hay Next Actions activas, el correo se omite.

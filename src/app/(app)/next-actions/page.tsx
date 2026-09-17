@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NEXT_ACTION_LIMIT } from "@/lib/constants";
+import { getTaskAgeInDays } from "@/lib/task-age";
 import NextActionItem from "@/components/NextActionItem";
 
 export default async function NextActionsPage() {
@@ -11,6 +12,7 @@ export default async function NextActionsPage() {
     prisma.project.findMany({
       where: { archived: false },
       orderBy: { name: "asc" },
+      select: { id: true, name: true },
     }),
   ]);
 
@@ -40,6 +42,8 @@ export default async function NextActionsPage() {
               title: task.title,
               context: task.context,
               projectId: task.projectId,
+              ageInDays: getTaskAgeInDays(task.createdAt),
+              tentativeDate: task.tentativeDate?.toISOString() ?? null,
             }}
             projects={projects}
           />

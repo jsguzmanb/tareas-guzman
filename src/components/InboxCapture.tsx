@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import { createInboxTask } from "@/lib/actions";
 
 type SpeechRecognitionEvent = {
@@ -32,6 +32,15 @@ type SpeechRecognitionWindow = Window & {
   webkitSpeechRecognition?: SpeechRecognitionConstructor;
 };
 
+function subscribeToVoiceSupport() {
+  return () => {};
+}
+
+function getVoiceSupportSnapshot() {
+  const speechWindow = window as SpeechRecognitionWindow;
+  return Boolean(speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition);
+}
+
 export default function InboxCapture({
   projectId,
   placeholder,
@@ -43,19 +52,15 @@ export default function InboxCapture({
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const [title, setTitle] = useState("");
   const [isListening, setIsListening] = useState(false);
-  const [isVoiceSupported, setIsVoiceSupported] = useState(true);
+  const isVoiceSupported = useSyncExternalStore(
+    subscribeToVoiceSupport,
+    getVoiceSupportSnapshot,
+    () => false
+  );
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    const speechWindow = window as SpeechRecognitionWindow;
-    setIsVoiceSupported(
-      Boolean(
-        speechWindow.SpeechRecognition ??
-          speechWindow.webkitSpeechRecognition,
-      ),
-    );
-
     return () => recognitionRef.current?.stop();
   }, []);
 
@@ -71,7 +76,6 @@ export default function InboxCapture({
       speechWindow.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      setIsVoiceSupported(false);
       setVoiceError("El reconocimiento de voz no está disponible en este navegador.");
       return;
     }
