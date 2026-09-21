@@ -6,19 +6,13 @@ import {
   consumeJsgAccessToken,
   IdentityConflictError,
 } from "@/lib/jsg-identity";
+import { isConsumedAccessTokenConflict } from "@/lib/prisma-errors";
 import { prisma } from "@/lib/prisma";
 
 function loginRedirect(request: NextRequest, reason: string) {
   const url = new URL("/login", request.url);
   url.searchParams.set("reason", reason);
   return NextResponse.redirect(url, 303);
-}
-
-function isConsumedJtiConflict(error: Prisma.PrismaClientKnownRequestError) {
-  const target = error.meta?.target;
-  return Array.isArray(target)
-    ? target.includes("jti")
-    : typeof target === "string" && target.includes("jti");
 }
 
 export async function POST(request: NextRequest) {
@@ -52,8 +46,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2002" &&
-      isConsumedJtiConflict(error)
+      isConsumedAccessTokenConflict(error)
     ) {
       return loginRedirect(request, "link_used");
     }
