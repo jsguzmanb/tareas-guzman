@@ -1,12 +1,17 @@
 {
+  "git": {
+    "deploymentEnabled": {
+      "codex/multiuser-access": false
+    }
+  },
   "crons": [
     {
       "path": "/api/cron/weekly-review",
-      "schedule": "0 14 * * 5"
+      "schedule": "0 * * * *"
     },
     {
       "path": "/api/cron/daily-next-actions",
-      "schedule": "0 13 * * *"
+      "schedule": "0 * * * *"
     }
   ]
 }
