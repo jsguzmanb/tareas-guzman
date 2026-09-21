@@ -17,10 +17,10 @@ export async function GET(request: Request) {
 
   const appUrl = (
     process.env.APP_URL ??
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL
-      ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-      : process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
+    (process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
         : "http://localhost:3000")
   ).replace(/\/$/, "");
   const now = new Date();
