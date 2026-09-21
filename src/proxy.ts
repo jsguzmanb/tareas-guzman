@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySessionToken, COOKIE_NAME } from "@/lib/auth";
 
 export const config = {
-  matcher: ["/((?!login|api/login|api/cron|api/shortcuts|_next/static|_next/image|favicon.ico|manifest.json|icons).*)"],
+  matcher: [
+    "/((?!login|api/login|api/auth/jsg|api/webhooks/jsg-membership|api/cron|api/shortcuts|_next/static|_next/image|favicon.ico|manifest.json|icons).*)",
+  ],
 };
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = request.cookies.get(COOKIE_NAME)?.value;
   const valid = token ? await verifySessionToken(token) : false;
 

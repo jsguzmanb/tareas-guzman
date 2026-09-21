@@ -2,6 +2,7 @@ import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
 import { prisma } from "@/lib/prisma";
 import { getCompletionStreak } from "@/lib/streak";
+import { requireActiveUser } from "@/lib/dal";
 
 const NAV = [
   { href: "/", label: "Inbox" },
@@ -10,12 +11,14 @@ const NAV = [
   { href: "/projects", label: "Proyectos" },
   { href: "/someday", label: "Someday" },
   { href: "/review", label: "Revisión" },
+  { href: "/settings", label: "Configuración" },
 ];
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
+  const user = await requireActiveUser();
   const [inboxCount, streak] = await Promise.all([
-    prisma.task.count({ where: { status: "INBOX" } }),
-    getCompletionStreak(),
+    prisma.task.count({ where: { ownerId: user.id, status: "INBOX" } }),
+    getCompletionStreak(user.id),
   ]);
 
   return (

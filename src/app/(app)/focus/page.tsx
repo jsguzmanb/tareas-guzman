@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import FocusTask from "@/components/FocusTask";
+import { requireActiveUser } from "@/lib/dal";
 
 export default async function FocusPage() {
+  const user = await requireActiveUser();
   const task = await prisma.task.findFirst({
-    where: { status: "NEXT_ACTION" },
+    where: { ownerId: user.id, status: "NEXT_ACTION" },
     orderBy: { createdAt: "asc" },
   });
 

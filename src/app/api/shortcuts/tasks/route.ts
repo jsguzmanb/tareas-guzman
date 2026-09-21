@@ -1,22 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { resolveShortcutOwner } from "@/lib/shortcut-auth";
 
 const MAX_TITLE_LENGTH = 500;
 
 export async function POST(request: NextRequest) {
-  const secret = process.env.SHORTCUTS_SECRET;
-
-  if (!secret) {
-    console.error("SHORTCUTS_SECRET is not set");
-    return NextResponse.json(
-      { error: "El servicio no está configurado" },
-      { status: 503 },
-    );
+  const authHeader = request.headers.get("authorization");
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice("Bearer ".length)
+    : "";
+  if (!token) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${secret}`) {
+  const ownerId = await resolveShortcutOwner(prisma, token);
+  if (!ownerId) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
@@ -51,6 +50,7 @@ export async function POST(request: NextRequest) {
 
   const task = await prisma.task.create({
     data: {
+      ownerId,
       title,
       status: "INBOX",
     },

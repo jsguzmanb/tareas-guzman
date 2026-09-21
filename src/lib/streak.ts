@@ -4,9 +4,9 @@ function toDateKey(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 
-export async function getCompletionStreak() {
+export async function getCompletionStreak(ownerId: string) {
   const completions = await prisma.task.findMany({
-    where: { status: "DONE", completedAt: { not: null } },
+    where: { ownerId, status: "DONE", completedAt: { not: null } },
     select: { completedAt: true },
   });
 

@@ -13,10 +13,98 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  username     String   @unique
-  passwordHash String
-  createdAt    DateTime @default(now())
+  id              String   @id @default(cuid())
+  username        String?  @unique
+  passwordHash    String?
+  identityEmail   String?  @unique
+  externalSubject String?  @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  accessGrants           AccessGrant[]
+  projects               Project[]
+  tasks                  Task[]
+  weeklyReviews          WeeklyReview[]
+  notificationPreference NotificationPreference?
+  shortcutCredentials    ShortcutCredential[]
+  membershipEvents       MembershipEvent[]
+}
+
+enum AccessGrantSource {
+  MEMBERSHIP
+  COURTESY
+  BETA
+  TECHNICAL
+}
+
+model AccessGrant {
+  id              String            @id @default(cuid())
+  userId          String
+  source          AccessGrantSource
+  entitlement     String            @default("tasks")
+  active          Boolean           @default(true)
+  sourceStatus    String?
+  sourceUpdatedAt DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  user            User              @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, source, entitlement])
+  @@index([userId, entitlement, active])
+}
+
+model NotificationPreference {
+  userId                String   @id
+  notificationEmail     String
+  timeZone              String   @default("UTC")
+  dailyReminderEnabled  Boolean  @default(true)
+  dailyReminderHour     Int      @default(8)
+  weeklyReminderEnabled Boolean  @default(true)
+  weeklyReminderWeekday Int      @default(5)
+  weeklyReminderHour    Int      @default(9)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+}
+
+model ShortcutCredential {
+  id          String    @id @default(cuid())
+  userId      String
+  label       String
+  tokenHash   String    @unique
+  tokenPrefix String
+  createdAt   DateTime  @default(now())
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, revokedAt])
+}
+
+model ConsumedAccessToken {
+  jti        String   @id
+  issuer     String
+  subject    String
+  expiresAt  DateTime
+  consumedAt DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
+model MembershipEvent {
+  eventId      String   @id
+  userId       String
+  subject      String
+  entitlement  String   @default("tasks")
+  active       Boolean
+  sourceStatus String?
+  occurredAt   DateTime
+  receivedAt   DateTime @default(now())
+  applied      Boolean  @default(false)
+  user         User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([userId, occurredAt])
+  @@index([subject, occurredAt])
 }
 
 enum TaskStatus {
@@ -28,28 +116,43 @@ enum TaskStatus {
 
 model Project {
   id        String   @id @default(cuid())
+  ownerId   String
   name      String
   notes     String?
   archived  Boolean  @default(false)
   createdAt DateTime @default(now())
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Restrict)
   tasks     Task[]
+
+  @@unique([id, ownerId])
+  @@index([ownerId, archived, createdAt])
 }
 
 model Task {
-  id        String     @id @default(cuid())
-  title     String
-  notes     String?
-  context   String?
-  status    TaskStatus @default(INBOX)
-  project   Project?   @relation(fields: [projectId], references: [id])
-  projectId String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  completedAt DateTime?
+  id            String     @id @default(cuid())
+  ownerId       String
+  title         String
+  notes         String?
+  context       String?
+  status        TaskStatus @default(INBOX)
+  owner         User       @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  project       Project?   @relation(fields: [projectId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  projectId     String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  completedAt   DateTime?
   tentativeDate DateTime?
+
+  @@unique([id, ownerId])
+  @@index([ownerId, status, createdAt])
+  @@index([ownerId, projectId])
 }
 
 model WeeklyReview {
   id          String   @id @default(cuid())
+  ownerId     String
   completedAt DateTime @default(now())
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+
+  @@index([ownerId, completedAt])
 }

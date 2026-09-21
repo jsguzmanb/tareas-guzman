@@ -1,15 +1,20 @@
 import { prisma } from "@/lib/prisma";
 import { NEXT_ACTION_LIMIT } from "@/lib/constants";
 import ReviewChecklist from "@/components/ReviewChecklist";
+import { requireActiveUser } from "@/lib/dal";
 
 export default async function ReviewPage() {
+  const user = await requireActiveUser();
   const [inboxCount, projectsCount, somedayCount, nextActionsCount, lastReview] =
     await Promise.all([
-      prisma.task.count({ where: { status: "INBOX" } }),
-      prisma.project.count({ where: { archived: false } }),
-      prisma.task.count({ where: { status: "SOMEDAY" } }),
-      prisma.task.count({ where: { status: "NEXT_ACTION" } }),
-      prisma.weeklyReview.findFirst({ orderBy: { completedAt: "desc" } }),
+      prisma.task.count({ where: { ownerId: user.id, status: "INBOX" } }),
+      prisma.project.count({ where: { ownerId: user.id, archived: false } }),
+      prisma.task.count({ where: { ownerId: user.id, status: "SOMEDAY" } }),
+      prisma.task.count({ where: { ownerId: user.id, status: "NEXT_ACTION" } }),
+      prisma.weeklyReview.findFirst({
+        where: { ownerId: user.id },
+        orderBy: { completedAt: "desc" },
+      }),
     ]);
 
   return (

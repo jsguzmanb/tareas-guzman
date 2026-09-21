@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma migrate deploy && next build",
+    "build": "DATABASE_URL=\"$DATABASE_URL_UNPOOLED\" prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --import tsx tests/index.ts",
+    "test:isolation": "node --import tsx tests/tenant-isolation.test.ts",
     "seed": "tsx prisma/seed.ts",
     "postinstall": "prisma generate"
   },

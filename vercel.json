@@ -1,9 +1,4 @@
 {
-  "git": {
-    "deploymentEnabled": {
-      "codex/multiuser-access": false
-    }
-  },
   "crons": [
     {
       "path": "/api/cron/weekly-review",

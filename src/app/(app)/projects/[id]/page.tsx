@@ -4,6 +4,7 @@ import { getTaskAgeInDays } from "@/lib/task-age";
 import InboxCapture from "@/components/InboxCapture";
 import InboxItem from "@/components/InboxItem";
 import NextActionItem from "@/components/NextActionItem";
+import { requireActiveUser } from "@/lib/dal";
 
 export default async function ProjectDetailPage({
   params,
@@ -11,14 +12,20 @@ export default async function ProjectDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const user = await requireActiveUser();
 
   const [project, projects] = await Promise.all([
-    prisma.project.findUnique({
-      where: { id },
-      include: { tasks: { orderBy: { createdAt: "asc" } } },
+    prisma.project.findFirst({
+      where: { id, ownerId: user.id },
+      include: {
+        tasks: {
+          where: { ownerId: user.id },
+          orderBy: { createdAt: "asc" },
+        },
+      },
     }),
     prisma.project.findMany({
-      where: { archived: false },
+      where: { ownerId: user.id, archived: false },
       orderBy: { name: "asc" },
       select: { id: true, name: true },
     }),

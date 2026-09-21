@@ -1,68 +1,64 @@
-"use client";
+import Link from "next/link";
+import TechnicalLoginForm from "@/components/TechnicalLoginForm";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+const REASONS: Record<string, string> = {
+  access_revoked: "Tu acceso a este gestor no está activo.",
+  invalid_invitation:
+    "El enlace de acceso venció o no es válido. Ábrelo nuevamente desde JuanSGuzman.",
+  link_used: "Este enlace ya fue utilizado. Genera uno nuevo desde JuanSGuzman.",
+  identity_conflict:
+    "No pudimos vincular tu identidad automáticamente. Contacta a soporte.",
+  access_error:
+    "No pudimos iniciar la sesión. Inténtalo nuevamente desde JuanSGuzman.",
+};
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-    setLoading(false);
-    if (res.ok) {
-      router.push("/");
-      router.refresh();
-    } else {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Error al iniciar sesión");
-    }
-  }
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ reason?: string }>;
+}) {
+  const { reason } = await searchParams;
+  const message = reason ? REASONS[reason] : null;
+  const technicalLoginEnabled =
+    process.env.ALLOW_TECHNICAL_LOGIN === "true" ||
+    process.env.NODE_ENV !== "production";
+  const accountUrl =
+    process.env.JSG_ACCOUNT_URL ?? "https://juansguzman.com/mi-cuenta/";
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white rounded-xl shadow p-6 space-y-4"
-      >
-        <h1 className="text-xl font-semibold text-neutral-900">Iniciar sesión</h1>
-        <div className="space-y-1">
-          <label className="text-sm text-neutral-600">Usuario</label>
-          <input
-            className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            autoFocus
-          />
+      <div className="w-full max-w-sm bg-white rounded-xl shadow p-6 space-y-5">
+        <div className="space-y-2">
+          <h1 className="text-xl font-semibold text-neutral-900">Gestor de tareas</h1>
+          <p className="text-sm text-neutral-600">
+            Los miembros entran directamente desde su cuenta de JuanSGuzman.
+          </p>
         </div>
-        <div className="space-y-1">
-          <label className="text-sm text-neutral-600">Contraseña</label>
-          <input
-            type="password"
-            className="w-full border border-neutral-300 rounded-lg px-3 py-2"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-neutral-900 text-white rounded-lg py-2 font-medium disabled:opacity-50"
+
+        {message && (
+          <p className="text-sm text-red-700" role="alert">
+            {message}
+          </p>
+        )}
+
+        <Link
+          href={accountUrl}
+          className="block w-full text-center bg-neutral-900 text-white rounded-lg py-2 font-medium"
         >
-          {loading ? "Entrando..." : "Entrar"}
-        </button>
-      </form>
+          Ir a JuanSGuzman
+        </Link>
+
+        {technicalLoginEnabled && (
+          <details className="border-t border-neutral-200 pt-4">
+            <summary className="cursor-pointer text-sm text-neutral-500">
+              Acceso técnico
+            </summary>
+            <div className="pt-4">
+              <TechnicalLoginForm />
+            </div>
+          </details>
+        )}
+      </div>
     </main>
   );
 }
