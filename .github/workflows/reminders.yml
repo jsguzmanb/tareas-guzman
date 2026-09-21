@@ -1,0 +1,41 @@
+name: Recordatorios por usuario
+
+on:
+  schedule:
+    - cron: "5 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: tareas-recordatorios
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    env:
+      TASKS_APP_URL: ${{ secrets.TASKS_APP_URL }}
+      TASKS_CRON_SECRET: ${{ secrets.TASKS_CRON_SECRET }}
+    steps:
+      - name: Validar configuración
+        shell: bash
+        run: |
+          test -n "$TASKS_APP_URL"
+          test -n "$TASKS_CRON_SECRET"
+
+      - name: Ejecutar recordatorios diarios
+        shell: bash
+        run: |
+          curl --fail-with-body --silent --show-error \
+            --retry 3 --retry-all-errors \
+            --header "Authorization: Bearer $TASKS_CRON_SECRET" \
+            "${TASKS_APP_URL%/}/api/cron/daily-next-actions"
+
+      - name: Ejecutar recordatorios semanales
+        shell: bash
+        run: |
+          curl --fail-with-body --silent --show-error \
+            --retry 3 --retry-all-errors \
+            --header "Authorization: Bearer $TASKS_CRON_SECRET" \
+            "${TASKS_APP_URL%/}/api/cron/weekly-review"

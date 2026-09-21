@@ -58,10 +58,9 @@ Y un cuerpo JSON con el texto dictado:
 
 ## Recordatorios por correo
 
-Vercel ejecuta dos cron jobs definidos en `vercel.json`:
-
-- El top 5 diario de Next Actions a las 13:00 UTC.
-- La revisión semanal los viernes a las 14:00 UTC.
+El workflow `.github/workflows/reminders.yml` invoca cada hora los dos endpoints
+protegidos. Se usa GitHub Actions porque el plan Hobby de Vercel solo permite
+cron jobs diarios y no puede respetar zonas horarias por usuario.
 
 Configura estas variables en el entorno de producción de Vercel:
 
@@ -71,8 +70,13 @@ Configura estas variables en el entorno de producción de Vercel:
 - `REMINDER_EMAIL_FROM`: remitente verificado en Resend. Es opcional durante las pruebas.
 - `APP_URL`: URL pública estable de la aplicación. Es opcional en Vercel.
 
+Configura además estos secretos en GitHub Actions:
+
+- `TASKS_APP_URL`: URL pública estable de la aplicación.
+- `TASKS_CRON_SECRET`: el mismo valor de `CRON_SECRET` configurado en Vercel.
+
 Los destinatarios y horarios ya no son globales: cada usuario configura su
-correo, zona horaria y preferencias desde `/settings`. Los cron se ejecutan
+correo, zona horaria y preferencias desde `/settings`. El workflow se ejecuta
 cada hora y solo envían cuando coincide la hora local del usuario. La clave de
 idempotencia incluye `userId` y fecha local.
 
@@ -107,5 +111,6 @@ base desechable, aplica allí las migraciones y ejecuta:
 TEST_DATABASE_URL='postgresql://...' npm run test:isolation
 ```
 
-El envío diario es idempotente durante 24 horas para evitar duplicados si Vercel
-repite una ejecución. Si no hay Next Actions activas, el correo se omite.
+El envío diario es idempotente durante 24 horas para evitar duplicados si el
+programador repite una ejecución. Si no hay Next Actions activas, el correo se
+omite.
