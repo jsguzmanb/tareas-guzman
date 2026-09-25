@@ -8,6 +8,34 @@ type IdentityInput = {
   email: string;
 };
 
+type InitialNotificationConfig = {
+  adminEmail?: string;
+  adminNotificationEmail?: string;
+  adminTimeZone?: string;
+};
+
+export function getInitialNotificationPreference(
+  identityEmail: string,
+  config: InitialNotificationConfig = {
+    adminEmail: process.env.ADMIN_EMAIL,
+    adminNotificationEmail: process.env.REMINDER_EMAIL_TO,
+    adminTimeZone: process.env.ADMIN_TIME_ZONE,
+  },
+) {
+  const normalizedIdentityEmail = identityEmail.trim().toLowerCase();
+  const normalizedAdminEmail = config.adminEmail?.trim().toLowerCase();
+  const isAdmin =
+    Boolean(normalizedAdminEmail) &&
+    normalizedAdminEmail === normalizedIdentityEmail;
+
+  return {
+    notificationEmail:
+      (isAdmin && config.adminNotificationEmail?.trim().toLowerCase()) ||
+      normalizedIdentityEmail,
+    timeZone: (isAdmin && config.adminTimeZone?.trim()) || "UTC",
+  };
+}
+
 export async function findJsgUser(
   tx: Prisma.TransactionClient,
   identity: IdentityInput,
@@ -52,13 +80,16 @@ export async function resolveJsgUser(
         },
       });
 
+  const initialNotificationPreference = getInitialNotificationPreference(
+    identity.email,
+  );
+
   await tx.notificationPreference.upsert({
     where: { userId: user.id },
     update: {},
     create: {
       userId: user.id,
-      notificationEmail: identity.email,
-      timeZone: "UTC",
+      ...initialNotificationPreference,
     },
   });
 
