@@ -16,18 +16,18 @@ export default function SomedayCapture() {
           formRef.current?.reset();
         });
       }}
-      className="flex gap-2"
+      className="flex flex-col gap-2 sm:flex-row"
     >
       <input
         name="title"
         placeholder="Una idea para algún día..."
-        className="flex-1 border border-neutral-300 rounded-lg px-3 py-2 bg-white"
+        className="jsg-field flex-1 px-4 py-2.5"
         disabled={isPending}
       />
       <button
         type="submit"
         disabled={isPending}
-        className="bg-neutral-900 text-white px-4 py-2 rounded-lg font-medium disabled:opacity-50"
+        className="jsg-button-primary px-5 py-2.5 disabled:opacity-50"
       >
         Guardar
       </button>

@@ -11,24 +11,24 @@ export default function FocusTask({
   const [isPending, startTransition] = useTransition();
 
   return (
-    <div className="flex flex-col items-center gap-4 max-w-md text-center">
-      <p className="text-xs uppercase tracking-wide text-neutral-400">
+    <div className="flex max-w-xl flex-col items-center gap-4 text-center">
+      <p className="jsg-kicker">
         Tu próxima acción
       </p>
-      <h1 className="text-2xl font-semibold text-neutral-900">{task.title}</h1>
-      {task.context && <p className="text-sm text-neutral-500">{task.context}</p>}
-      <div className="flex gap-2 mt-4">
+      <h1 className="text-3xl font-extrabold tracking-[-0.045em] text-[var(--forest)] sm:text-4xl">{task.title}</h1>
+      {task.context && <p className="jsg-muted text-sm">{task.context}</p>}
+      <div className="mt-4 flex flex-wrap justify-center gap-2">
         <button
           onClick={() => startTransition(() => completeTask(task.id))}
           disabled={isPending}
-          className="px-5 py-2 rounded-lg bg-green-700 text-white font-medium disabled:opacity-50"
+          className="jsg-button-primary px-6 py-3 disabled:opacity-50"
         >
           Hecho
         </button>
         <button
           onClick={() => startTransition(() => sendToSomeday(task.id))}
           disabled={isPending}
-          className="px-5 py-2 rounded-lg border border-neutral-300 text-neutral-600 disabled:opacity-50"
+          className="jsg-button-secondary px-6 py-3 disabled:opacity-50"
         >
           Ahora no
         </button>

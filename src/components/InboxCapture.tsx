@@ -120,7 +120,7 @@ export default function InboxCapture({
             formRef.current?.reset();
           });
         }}
-        className="flex gap-2"
+        className="jsg-card flex flex-col gap-2 p-2 sm:flex-row"
       >
         {projectId && <input type="hidden" name="projectId" value={projectId} />}
         <input
@@ -129,7 +129,7 @@ export default function InboxCapture({
           onChange={(event) => setTitle(event.target.value)}
           placeholder={placeholder ?? "¿Qué tienes en la cabeza? Escríbelo y ya."}
           autoFocus
-          className="min-w-0 flex-1 border border-neutral-300 rounded-lg px-3 py-2 bg-white"
+          className="min-w-0 flex-1 rounded-xl border-0 bg-transparent px-3 py-2.5 text-[var(--forest)] placeholder:text-[var(--muted)] focus:outline-none"
           disabled={isPending}
         />
         <button
@@ -145,18 +145,18 @@ export default function InboxCapture({
                 : "Agregar tarea por voz"
               : "Tu navegador no admite reconocimiento de voz"
           }
-          className={`border px-3 py-2 rounded-lg font-medium disabled:opacity-50 ${
+          className={`rounded-xl border px-3 py-2.5 text-sm font-bold disabled:opacity-50 ${
             isListening
               ? "border-red-500 bg-red-50 text-red-700"
-              : "border-neutral-300 bg-white text-neutral-900"
+              : "border-[var(--line)] bg-[var(--sage-soft)] text-[var(--forest)]"
           }`}
         >
-          {isListening ? "Escuchando…" : "🎤"}
+          {isListening ? "Escuchando…" : "Dictar"}
         </button>
         <button
           type="submit"
           disabled={isPending || !title.trim()}
-          className="bg-neutral-900 text-white px-4 py-2 rounded-lg font-medium disabled:opacity-50"
+          className="jsg-button-primary px-5 py-2.5 disabled:opacity-50"
         >
           Capturar
         </button>

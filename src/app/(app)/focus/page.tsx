@@ -12,26 +12,21 @@ export default async function FocusPage() {
 
   if (!task) {
     return (
-      <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
-        <p className="text-lg text-neutral-700">No hay next actions activas.</p>
-        <p className="text-sm text-neutral-500">
-          Ve al{" "}
-          <Link href="/" className="underline">
-            Inbox
-          </Link>{" "}
-          y promueve algo.
-        </p>
+      <div className="jsg-card flex flex-col items-center justify-center gap-2 px-6 py-20 text-center">
+        <p className="jsg-kicker">Un momento de calma</p>
+        <h1 className="jsg-page-title mt-2">No hay nada urgente.</h1>
+        <p className="jsg-muted mt-2 text-sm">Revisa el <Link href="/" className="font-bold underline">Inbox</Link> cuando quieras elegir una nueva acción.</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6 py-16">
+    <div className="jsg-card flex min-h-[62vh] flex-col items-center justify-center gap-6 px-6 py-16">
       <FocusTask
         task={{ id: task.id, title: task.title, context: task.context }}
       />
-      <Link href="/next-actions" className="text-xs text-neutral-400 underline">
-        Ver todas las next actions
+      <Link href="/next-actions" className="jsg-muted text-xs font-bold underline">
+        Ver todas las siguientes acciones
       </Link>
     </div>
   );

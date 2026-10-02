@@ -19,22 +19,24 @@ export default async function NextActionsPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-baseline justify-between">
-        <h1 className="text-xl font-semibold text-neutral-900">Next Actions</h1>
+    <div className="flex flex-col gap-7">
+      <header className="flex items-end justify-between gap-4">
+        <div>
+          <p className="jsg-kicker">Tu lista corta</p>
+          <h1 className="jsg-page-title mt-2">Siguientes acciones</h1>
+          <p className="jsg-muted mt-2 text-sm">Solo lo que puede avanzar ahora.</p>
+        </div>
         <span
-          className={`text-sm font-medium ${
-            tasks.length >= NEXT_ACTION_LIMIT ? "text-red-600" : "text-neutral-500"
+          className={`rounded-full px-3 py-1.5 text-sm font-extrabold ${
+            tasks.length >= NEXT_ACTION_LIMIT ? "bg-red-100 text-red-700" : "bg-[var(--sage)] text-[var(--forest)]"
           }`}
         >
           {tasks.length} / {NEXT_ACTION_LIMIT}
         </span>
-      </div>
-      <ul className="flex flex-col gap-2">
+      </header>
+      <ul className="flex flex-col gap-3">
         {tasks.length === 0 && (
-          <p className="text-sm text-neutral-500">
-            No hay next actions activas. Ve al Inbox y promueve algo.
-          </p>
+          <li className="jsg-card p-8 text-center text-sm jsg-muted">No hay acciones activas. Ve al Inbox y elige una.</li>
         )}
         {tasks.map((task) => (
           <NextActionItem

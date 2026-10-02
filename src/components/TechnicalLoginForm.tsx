@@ -34,25 +34,25 @@ export default function TechnicalLoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-1">
-        <label htmlFor="technical-username" className="text-sm text-neutral-600">
+        <label htmlFor="technical-username" className="jsg-muted text-sm font-bold">
           Usuario
         </label>
         <input
           id="technical-username"
-          className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+          className="jsg-field w-full px-3 py-2"
           value={username}
           onChange={(event) => setUsername(event.target.value)}
           autoComplete="username"
         />
       </div>
       <div className="space-y-1">
-        <label htmlFor="technical-password" className="text-sm text-neutral-600">
+        <label htmlFor="technical-password" className="jsg-muted text-sm font-bold">
           Contraseña
         </label>
         <input
           id="technical-password"
           type="password"
-          className="w-full border border-neutral-300 rounded-lg px-3 py-2"
+          className="jsg-field w-full px-3 py-2"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           autoComplete="current-password"
@@ -62,7 +62,7 @@ export default function TechnicalLoginForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="w-full border border-neutral-300 rounded-lg py-2 font-medium disabled:opacity-50"
+        className="jsg-button-secondary w-full py-2.5 disabled:opacity-50"
       >
         {isPending ? "Entrando..." : "Entrar técnicamente"}
       </button>

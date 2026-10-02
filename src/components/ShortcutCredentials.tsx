@@ -29,14 +29,14 @@ export default function ShortcutCredentials({ credentials }: { credentials: Cred
   return (
     <section className="space-y-4">
       <div>
-        <h2 className="font-medium text-neutral-900">Atajos de iPhone</h2>
-        <p className="text-sm text-neutral-500">
+        <h2 className="text-lg font-extrabold text-[var(--forest)]">Atajos de iPhone</h2>
+        <p className="jsg-muted text-sm">
           Cada dispositivo usa su propia credencial. El token completo solo se muestra una vez.
         </p>
       </div>
 
       {revealedToken && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 p-3 space-y-2">
+        <div className="space-y-2 rounded-xl border border-[var(--apricot)] bg-[var(--apricot-soft)] p-4">
           <p className="text-sm font-medium text-amber-900">Guarda este token ahora:</p>
           <input
             readOnly
@@ -53,7 +53,7 @@ export default function ShortcutCredentials({ credentials }: { credentials: Cred
         <input
           value={label}
           onChange={(event) => setLabel(event.target.value)}
-          className="flex-1 rounded-lg border border-neutral-300 px-3 py-2"
+          className="jsg-field min-w-0 flex-1 px-3 py-2"
           placeholder="Nombre del dispositivo"
         />
         <button
@@ -62,7 +62,7 @@ export default function ShortcutCredentials({ credentials }: { credentials: Cred
           onClick={() =>
             startTransition(async () => reveal(await createShortcutCredential(label)))
           }
-          className="rounded-lg bg-neutral-900 px-4 py-2 text-white disabled:opacity-50"
+          className="jsg-button-primary px-4 py-2 disabled:opacity-50"
         >
           Crear
         </button>
@@ -72,11 +72,11 @@ export default function ShortcutCredentials({ credentials }: { credentials: Cred
         {credentials.map((credential) => (
           <li
             key={credential.id}
-            className="flex flex-col gap-2 rounded-lg border border-neutral-200 px-3 py-2 sm:flex-row sm:items-center sm:justify-between"
+            className="flex flex-col gap-2 rounded-xl border border-[var(--line)] bg-white/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
           >
             <div>
-              <p className="text-sm font-medium text-neutral-900">{credential.label}</p>
-              <p className="text-xs text-neutral-500">
+              <p className="text-sm font-bold text-[var(--forest)]">{credential.label}</p>
+              <p className="jsg-muted text-xs">
                 {credential.tokenPrefix} · creada {credential.createdAt}
                 {credential.lastUsedAt ? ` · último uso ${credential.lastUsedAt}` : ""}
               </p>

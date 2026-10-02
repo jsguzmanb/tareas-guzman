@@ -26,11 +26,22 @@ export default async function LoginPage({
     process.env.JSG_ACCOUNT_URL ?? "https://juansguzman.com/mi-cuenta/";
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
-      <div className="w-full max-w-sm bg-white rounded-xl shadow p-6 space-y-5">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-12">
+      <div className="absolute inset-y-0 left-0 hidden w-[38%] bg-[var(--forest)] lg:block" aria-hidden="true" />
+      <div className="relative grid w-full max-w-4xl overflow-hidden rounded-[2rem] border border-[var(--line)] bg-white/90 shadow-[var(--shadow)] lg:grid-cols-[0.85fr_1.15fr]">
+        <section className="hidden flex-col justify-between bg-[var(--forest)] p-10 text-white lg:flex">
+          <div className="text-sm font-extrabold tracking-[0.18em] uppercase text-[var(--apricot)]">Juan S. Guzmán</div>
+          <div>
+            <p className="text-4xl font-extrabold leading-tight tracking-[-0.05em]">Menos pendientes.<br />Más claridad.</p>
+            <p className="mt-4 max-w-xs text-sm leading-6 text-white/65">Un sistema sencillo para capturar, decidir y avanzar en lo que importa.</p>
+          </div>
+          <p className="text-xs text-white/50">Taller de calma digital</p>
+        </section>
+        <section className="space-y-6 p-6 sm:p-10 lg:p-12">
         <div className="space-y-2">
-          <h1 className="text-xl font-semibold text-neutral-900">Gestor de tareas</h1>
-          <p className="text-sm text-neutral-600">
+          <p className="jsg-kicker">Tu sistema personal</p>
+          <h1 className="jsg-page-title">Gestor de tareas</h1>
+          <p className="jsg-muted text-sm">
             Los miembros entran directamente desde su cuenta de JuanSGuzman.
           </p>
         </div>
@@ -43,14 +54,14 @@ export default async function LoginPage({
 
         <Link
           href={accountUrl}
-          className="block w-full text-center bg-neutral-900 text-white rounded-lg py-2 font-medium"
+          className="jsg-button-primary block w-full py-3 text-center"
         >
           Ir a JuanSGuzman
         </Link>
 
         {technicalLoginEnabled && (
-          <details className="border-t border-neutral-200 pt-4">
-            <summary className="cursor-pointer text-sm text-neutral-500">
+          <details className="border-t border-[var(--line)] pt-4">
+            <summary className="jsg-muted cursor-pointer text-sm font-bold">
               Acceso técnico
             </summary>
             <div className="pt-4">
@@ -58,6 +69,7 @@ export default async function LoginPage({
             </div>
           </details>
         )}
+        </section>
       </div>
     </main>
   );

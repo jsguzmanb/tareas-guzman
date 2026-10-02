@@ -17,24 +17,28 @@ export default async function ProjectsPage() {
   });
 
   return (
-    <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-xl font-semibold text-neutral-900 mb-2">Proyectos</h1>
+    <div className="flex flex-col gap-8">
+      <header className="space-y-3">
+        <p className="jsg-kicker">Resultados en movimiento</p>
+        <div>
+          <h1 className="jsg-page-title">Proyectos</h1>
+          <p className="jsg-muted mt-2 text-sm">Agrupa el trabajo que necesita más de un paso.</p>
+        </div>
         <CreateProjectForm />
-      </div>
-      <ul className="flex flex-col gap-2">
+      </header>
+      <ul className="grid gap-3 sm:grid-cols-2">
         {projects.length === 0 && (
-          <p className="text-sm text-neutral-500">Aún no tienes proyectos.</p>
+          <li className="jsg-card col-span-full p-8 text-center text-sm jsg-muted">Aún no tienes proyectos.</li>
         )}
         {projects.map((project) => (
           <li
             key={project.id}
-            className="flex items-center justify-between border border-neutral-200 rounded-lg px-3 py-2 bg-white"
+            className="jsg-card flex min-h-28 items-start justify-between gap-3 p-5"
           >
-            <Link href={`/projects/${project.id}`} className="text-neutral-900 hover:underline">
-              {project.name}
-              <span className="text-neutral-400 text-sm ml-2">
-                ({project.tasks.length} tarea{project.tasks.length === 1 ? "" : "s"})
+            <Link href={`/projects/${project.id}`} className="font-extrabold text-[var(--forest)] hover:underline">
+              <span className="block">{project.name}</span>
+              <span className="jsg-muted mt-2 block text-xs font-semibold">
+                {project.tasks.length} tarea{project.tasks.length === 1 ? "" : "s"} abierta{project.tasks.length === 1 ? "" : "s"}
               </span>
             </Link>
             <ArchiveProjectButton projectId={project.id} />

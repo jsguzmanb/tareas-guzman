@@ -39,15 +39,19 @@ export default async function ProjectDetailPage({
   const done = project.tasks.filter((t) => t.status === "DONE");
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-xl font-semibold text-neutral-900">{project.name}</h1>
+    <div className="flex flex-col gap-8">
+      <header>
+        <p className="jsg-kicker">Proyecto</p>
+        <h1 className="jsg-page-title mt-2">{project.name}</h1>
+        <p className="jsg-muted mt-2 text-sm">Todas las piezas de este resultado, en un solo lugar.</p>
+      </header>
 
       <InboxCapture projectId={project.id} placeholder="Agregar tarea a este proyecto..." />
 
       {nextActions.length > 0 && (
-        <section className="flex flex-col gap-2">
-          <h2 className="text-sm font-medium text-neutral-500">Next Actions</h2>
-          <ul className="flex flex-col gap-2">
+        <section className="flex flex-col gap-3">
+          <h2 className="font-extrabold text-[var(--forest)]">Siguientes acciones</h2>
+          <ul className="flex flex-col gap-3">
             {nextActions.map((task) => (
               <NextActionItem
                 key={task.id}
@@ -67,9 +71,9 @@ export default async function ProjectDetailPage({
       )}
 
       {inbox.length > 0 && (
-        <section className="flex flex-col gap-2">
-          <h2 className="text-sm font-medium text-neutral-500">Sin procesar</h2>
-          <ul className="flex flex-col gap-2">
+        <section className="flex flex-col gap-3">
+          <h2 className="font-extrabold text-[var(--forest)]">Sin procesar</h2>
+          <ul className="flex flex-col gap-3">
             {inbox.map((task) => (
               <InboxItem key={task.id} task={{ id: task.id, title: task.title }} />
             ))}
@@ -78,13 +82,13 @@ export default async function ProjectDetailPage({
       )}
 
       {someday.length > 0 && (
-        <section className="flex flex-col gap-2">
-          <h2 className="text-sm font-medium text-neutral-500">Someday/Maybe</h2>
-          <ul className="flex flex-col gap-2">
+        <section className="flex flex-col gap-3">
+          <h2 className="font-extrabold text-[var(--forest)]">Algún día</h2>
+          <ul className="flex flex-col gap-3">
             {someday.map((task) => (
               <li
                 key={task.id}
-                className="border border-neutral-200 rounded-lg px-3 py-2 bg-white text-neutral-700"
+                className="jsg-card p-4 text-[var(--forest)]"
               >
                 {task.title}
               </li>
@@ -94,13 +98,13 @@ export default async function ProjectDetailPage({
       )}
 
       {done.length > 0 && (
-        <section className="flex flex-col gap-2">
-          <h2 className="text-sm font-medium text-neutral-500">Hechas</h2>
-          <ul className="flex flex-col gap-2">
+        <section className="flex flex-col gap-3">
+          <h2 className="font-extrabold text-[var(--forest)]">Hechas</h2>
+          <ul className="flex flex-col gap-3">
             {done.map((task) => (
               <li
                 key={task.id}
-                className="border border-neutral-200 rounded-lg px-3 py-2 bg-neutral-100 text-neutral-400 line-through"
+                className="rounded-xl border border-[var(--line)] bg-[var(--sage-soft)] p-4 text-[var(--muted)] line-through"
               >
                 {task.title}
               </li>
@@ -110,7 +114,7 @@ export default async function ProjectDetailPage({
       )}
 
       {project.tasks.length === 0 && (
-        <p className="text-sm text-neutral-500">Este proyecto no tiene tareas todavía.</p>
+        <p className="jsg-card p-8 text-center text-sm jsg-muted">Este proyecto no tiene tareas todavía.</p>
       )}
     </div>
   );

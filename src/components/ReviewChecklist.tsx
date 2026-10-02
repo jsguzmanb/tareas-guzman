@@ -87,7 +87,7 @@ export default function ReviewChecklist({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="text-sm text-neutral-500">
+      <div className="jsg-muted text-sm">
         {lastReviewAt
           ? `Última revisión completada: ${lastReviewAt}`
           : "Todavía no has completado una revisión semanal."}
@@ -97,25 +97,25 @@ export default function ReviewChecklist({
         {steps.map((step) => (
           <li
             key={step.key}
-            className="flex items-start gap-3 border border-neutral-200 rounded-lg px-3 py-3 bg-white"
+            className="jsg-card flex items-start gap-4 p-4 sm:p-5"
           >
             <input
               type="checkbox"
               checked={!!checked[step.key]}
               onChange={() => toggle(step.key)}
-              className="mt-1"
+              className="mt-1 h-5 w-5 accent-[var(--forest)]"
             />
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-neutral-900">{step.title}</span>
+                <span className="font-extrabold text-[var(--forest)]">{step.title}</span>
                 {step.done && (
-                  <span className="text-xs text-green-700 bg-green-50 px-1.5 py-0.5 rounded">
+                  <span className="rounded-full bg-[var(--sage)] px-2 py-0.5 text-xs font-bold text-[var(--forest)]">
                     listo
                   </span>
                 )}
               </div>
-              <p className="text-sm text-neutral-500 mt-0.5">{step.description}</p>
-              <Link href={step.href} className="text-sm text-neutral-900 underline mt-1 inline-block">
+              <p className="jsg-muted mt-1 text-sm">{step.description}</p>
+              <Link href={step.href} className="mt-2 inline-block text-sm font-bold text-[var(--forest)] underline">
                 {step.linkLabel}
               </Link>
             </div>
@@ -126,7 +126,7 @@ export default function ReviewChecklist({
       <button
         onClick={complete}
         disabled={!allChecked || isPending}
-        className="bg-neutral-900 text-white px-4 py-2 rounded-lg font-medium disabled:opacity-40 self-start"
+        className="jsg-button-primary self-start px-5 py-3 disabled:opacity-40"
       >
         Marcar revisión semanal como completa
       </button>
