@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   ArchiveBoxIcon,
   BoltIcon,
+  CalendarDaysIcon,
   CheckCircleIcon,
   Cog6ToothIcon,
   InboxIcon,
@@ -21,6 +22,7 @@ const NAV = [
   { href: "/projects", label: "Proyectos", icon: RectangleStackIcon },
   { href: "/someday", label: "Algún día", icon: LightBulbIcon },
   { href: "/review", label: "Revisión", icon: ArchiveBoxIcon },
+  { href: "/routines", label: "Rutinas", icon: CalendarDaysIcon },
   { href: "/settings", label: "Ajustes", icon: Cog6ToothIcon },
 ];
 
