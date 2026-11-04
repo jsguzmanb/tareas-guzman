@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { NEXT_ACTION_LIMIT } from "@/lib/constants";
 import { requireActiveUser } from "@/lib/dal";
-import { syncWeeklyRoutinesForOwner } from "@/lib/routines";
 import {
   archiveProjectForOwner,
   deleteTaskForOwner,
@@ -180,33 +179,4 @@ export async function recordWeeklyReviewCompletion() {
   const user = await requireActiveUser();
   await prisma.weeklyReview.create({ data: { ownerId: user.id } });
   revalidatePath("/review");
-}
-
-export async function createWeeklyRoutine(formData: FormData) {
-  const user = await requireActiveUser();
-  const title = String(formData.get("title") ?? "").trim();
-  const weekday = Number(formData.get("weekday"));
-
-  if (!title || !Number.isInteger(weekday) || weekday < 0 || weekday > 6) {
-    return { error: "Escribe un título y elige un día válido." };
-  }
-
-  await prisma.routine.create({ data: { ownerId: user.id, title, weekday } });
-  await syncWeeklyRoutinesForOwner(prisma, user.id);
-  revalidatePath("/routines");
-  revalidateTaskViews();
-  return { error: null };
-}
-
-export async function setRoutinePaused(routineId: string, paused: boolean) {
-  const user = await requireActiveUser();
-  await prisma.routine.updateMany({
-    where: { id: routineId, ownerId: user.id },
-    data: { pausedAt: paused ? new Date() : null },
-  });
-
-  if (!paused) await syncWeeklyRoutinesForOwner(prisma, user.id);
-
-  revalidatePath("/routines");
-  revalidateTaskViews();
 }
