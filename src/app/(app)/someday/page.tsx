@@ -1,10 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import SomedayCapture from "@/components/SomedayCapture";
 import SomedayItem from "@/components/SomedayItem";
+import { requireActiveUser } from "@/lib/dal";
 
 export default async function SomedayPage() {
+  const user = await requireActiveUser();
   const tasks = await prisma.task.findMany({
-    where: { status: "SOMEDAY" },
+    where: { ownerId: user.id, status: "SOMEDAY" },
     orderBy: { createdAt: "desc" },
   });
 

@@ -1,16 +1,20 @@
 import { prisma } from "@/lib/prisma";
 import { NEXT_ACTION_LIMIT } from "@/lib/constants";
+import { getTaskAgeInDays } from "@/lib/task-age";
 import NextActionItem from "@/components/NextActionItem";
+import { requireActiveUser } from "@/lib/dal";
 
 export default async function NextActionsPage() {
+  const user = await requireActiveUser();
   const [tasks, projects] = await Promise.all([
     prisma.task.findMany({
-      where: { status: "NEXT_ACTION" },
+      where: { ownerId: user.id, status: "NEXT_ACTION" },
       orderBy: { createdAt: "asc" },
     }),
     prisma.project.findMany({
-      where: { archived: false },
+      where: { ownerId: user.id, archived: false },
       orderBy: { name: "asc" },
+      select: { id: true, name: true },
     }),
   ]);
 
@@ -40,6 +44,8 @@ export default async function NextActionsPage() {
               title: task.title,
               context: task.context,
               projectId: task.projectId,
+              ageInDays: getTaskAgeInDays(task.createdAt),
+              tentativeDate: task.tentativeDate?.toISOString() ?? null,
             }}
             projects={projects}
           />

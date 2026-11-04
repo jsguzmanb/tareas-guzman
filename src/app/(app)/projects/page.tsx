@@ -2,14 +2,16 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import CreateProjectForm from "@/components/CreateProjectForm";
 import ArchiveProjectButton from "@/components/ArchiveProjectButton";
+import { requireActiveUser } from "@/lib/dal";
 
 export default async function ProjectsPage() {
+  const user = await requireActiveUser();
   const projects = await prisma.project.findMany({
-    where: { archived: false },
+    where: { ownerId: user.id, archived: false },
     orderBy: { createdAt: "desc" },
     include: {
       tasks: {
-        where: { status: { not: "DONE" } },
+        where: { ownerId: user.id, status: { not: "DONE" } },
       },
     },
   });

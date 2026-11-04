@@ -10,8 +10,12 @@ function getSecret() {
   return new TextEncoder().encode(secret);
 }
 
-export async function createSession(username: string) {
-  const token = await new SignJWT({ username })
+type SessionPayload = {
+  userId: string;
+};
+
+export async function createSession(userId: string) {
+  const token = await new SignJWT({ userId })
     .setProtectedHeader({ alg })
     .setIssuedAt()
     .setExpirationTime("90d")
@@ -37,8 +41,9 @@ export async function getSession() {
   const token = store.get(COOKIE_NAME)?.value;
   if (!token) return null;
   try {
-    const { payload } = await jwtVerify(token, getSecret());
-    return payload as { username: string };
+    const { payload } = await jwtVerify(token, getSecret(), { algorithms: [alg] });
+    if (typeof payload.userId !== "string" || !payload.userId) return null;
+    return { userId: payload.userId } satisfies SessionPayload;
   } catch {
     return null;
   }
@@ -46,8 +51,8 @@ export async function getSession() {
 
 export async function verifySessionToken(token: string) {
   try {
-    await jwtVerify(token, getSecret());
-    return true;
+    const { payload } = await jwtVerify(token, getSecret(), { algorithms: [alg] });
+    return typeof payload.userId === "string" && payload.userId.length > 0;
   } catch {
     return false;
   }

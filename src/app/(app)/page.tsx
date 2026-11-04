@@ -2,10 +2,12 @@ import { prisma } from "@/lib/prisma";
 import InboxCapture from "@/components/InboxCapture";
 import InboxItem from "@/components/InboxItem";
 import RefreshOnFocus from "@/components/RefreshOnFocus";
+import { requireActiveUser } from "@/lib/dal";
 
 export default async function InboxPage() {
+  const user = await requireActiveUser();
   const tasks = await prisma.task.findMany({
-    where: { status: "INBOX" },
+    where: { ownerId: user.id, status: "INBOX" },
     orderBy: { createdAt: "asc" },
   });
 
