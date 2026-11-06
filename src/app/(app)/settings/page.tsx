@@ -17,13 +17,13 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-xl font-semibold text-neutral-900">Configuración</h1>
-        <p className="text-sm text-neutral-500">Tu cuenta, recordatorios y accesos personales.</p>
-      </div>
+      <header>
+        <p className="jsg-kicker">Tu forma de trabajar</p>
+        <h1 className="jsg-page-title mt-2">Ajustes</h1>
+        <p className="jsg-muted mt-2 text-sm">Tu cuenta, recordatorios y accesos personales.</p>
+      </header>
 
-      <NotificationSettings
-        preference={{
+      <div className="jsg-card p-5 sm:p-7"><NotificationSettings preference={{
           notificationEmail: preference?.notificationEmail ?? fallbackEmail,
           timeZone: preference?.timeZone ?? "UTC",
           dailyReminderEnabled: preference?.dailyReminderEnabled ?? true,
@@ -31,12 +31,9 @@ export default async function SettingsPage() {
           weeklyReminderEnabled: preference?.weeklyReminderEnabled ?? true,
           weeklyReminderWeekday: preference?.weeklyReminderWeekday ?? 5,
           weeklyReminderHour: preference?.weeklyReminderHour ?? 9,
-        }}
-      />
+        }} /></div>
 
-      <hr className="border-neutral-200" />
-
-      <ShortcutCredentials
+      <div className="jsg-card p-5 sm:p-7"><ShortcutCredentials
         credentials={credentials.map((credential) => ({
           id: credential.id,
           label: credential.label,
@@ -44,7 +41,7 @@ export default async function SettingsPage() {
           createdAt: credential.createdAt.toLocaleDateString("es-MX"),
           lastUsedAt: credential.lastUsedAt?.toLocaleDateString("es-MX") ?? null,
         }))}
-      />
+      /></div>
     </div>
   );
 }

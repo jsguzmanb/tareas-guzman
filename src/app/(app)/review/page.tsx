@@ -18,8 +18,12 @@ export default async function ReviewPage() {
     ]);
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-xl font-semibold text-neutral-900">Revisión semanal</h1>
+    <div className="flex flex-col gap-7">
+      <header>
+        <p className="jsg-kicker">Cierra ciclos</p>
+        <h1 className="jsg-page-title mt-2">Revisión semanal</h1>
+        <p className="jsg-muted mt-2 text-sm">Recupera perspectiva y deja tu sistema listo para la semana.</p>
+      </header>
       <ReviewChecklist
         inboxCount={inboxCount}
         projectsCount={projectsCount}

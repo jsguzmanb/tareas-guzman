@@ -38,36 +38,36 @@ export default function InboxItem({ task }: { task: { id: string; title: string 
   }
 
   return (
-    <li className="flex flex-col gap-1 border border-neutral-200 rounded-lg px-3 py-2 bg-white">
+    <li className="jsg-card flex flex-col gap-3 p-4">
       <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
-        <span className="text-neutral-900">{task.title}</span>
+        <span className="font-bold text-[var(--forest)]">{task.title}</span>
         <div className="flex flex-wrap gap-1 sm:shrink-0">
           <button
             onClick={handleComplete}
             disabled={isPending}
             title="Completar ahora (regla de los 2 minutos)"
-            className="text-xs px-2 py-1 rounded bg-green-700 text-white disabled:opacity-50"
+            className="jsg-button-primary px-3 py-1.5 text-xs disabled:opacity-50"
           >
             Completar
           </button>
           <button
             onClick={handlePromote}
             disabled={isPending}
-            className="text-xs px-2 py-1 rounded bg-neutral-900 text-white disabled:opacity-50"
+            className="rounded-lg bg-[var(--apricot)] px-3 py-1.5 text-xs font-bold text-[var(--forest)] disabled:opacity-50"
           >
             Next Action
           </button>
           <button
             onClick={handleSomeday}
             disabled={isPending}
-            className="text-xs px-2 py-1 rounded border border-neutral-300 disabled:opacity-50"
+            className="jsg-button-secondary px-3 py-1.5 text-xs disabled:opacity-50"
           >
             Someday
           </button>
           <button
             onClick={handleDelete}
             disabled={isPending}
-            className="text-xs px-2 py-1 rounded text-red-600 disabled:opacity-50"
+            className="rounded-lg px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50 disabled:opacity-50"
           >
             Eliminar
           </button>

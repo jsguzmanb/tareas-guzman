@@ -24,6 +24,7 @@ model User {
   accessGrants           AccessGrant[]
   projects               Project[]
   tasks                  Task[]
+  routines               Routine[]
   weeklyReviews          WeeklyReview[]
   notificationPreference NotificationPreference?
   shortcutCredentials    ShortcutCredential[]
@@ -129,23 +130,44 @@ model Project {
 }
 
 model Task {
-  id            String     @id @default(cuid())
-  ownerId       String
-  title         String
-  notes         String?
-  context       String?
-  status        TaskStatus @default(INBOX)
-  owner         User       @relation(fields: [ownerId], references: [id], onDelete: Restrict)
-  project       Project?   @relation(fields: [projectId, ownerId], references: [id, ownerId], onDelete: Restrict)
-  projectId     String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  completedAt   DateTime?
-  tentativeDate DateTime?
+  id                  String     @id @default(cuid())
+  ownerId             String
+  title               String
+  notes               String?
+  context             String?
+  status              TaskStatus @default(INBOX)
+  owner               User       @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  project             Project?   @relation(fields: [projectId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  projectId           String?
+  routine             Routine?   @relation(fields: [routineId, ownerId], references: [id, ownerId], onDelete: Restrict)
+  routineId           String?
+  routineScheduledFor String?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  completedAt         DateTime?
+  tentativeDate       DateTime?
 
   @@unique([id, ownerId])
+  @@unique([routineId, routineScheduledFor])
   @@index([ownerId, status, createdAt])
   @@index([ownerId, projectId])
+  @@index([ownerId, routineId])
+}
+
+model Routine {
+  id               String    @id @default(cuid())
+  ownerId          String
+  title            String
+  weekday          Int
+  pausedAt         DateTime?
+  lastScheduledFor String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  owner            User      @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  tasks            Task[]
+
+  @@unique([id, ownerId])
+  @@index([ownerId, pausedAt])
 }
 
 model WeeklyReview {

@@ -10,7 +10,7 @@ export default function ArchiveProjectButton({ projectId }: { projectId: string 
     <button
       onClick={() => startTransition(() => archiveProject(projectId))}
       disabled={isPending}
-      className="text-xs px-2 py-1 rounded text-neutral-500 hover:bg-neutral-100 disabled:opacity-50"
+      className="rounded-lg px-2 py-1 text-xs font-bold text-[var(--muted)] hover:bg-[var(--sage-soft)] disabled:opacity-50"
     >
       Archivar
     </button>

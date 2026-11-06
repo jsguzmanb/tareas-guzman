@@ -8,9 +8,9 @@ export default function SomedayItem({ task }: { task: { id: string; title: strin
   const [isPending, startTransition] = useTransition();
 
   return (
-    <li className="flex flex-col gap-1 border border-neutral-200 rounded-lg px-3 py-2 bg-white">
+    <li className="jsg-card flex flex-col gap-2 p-4">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-neutral-900">{task.title}</span>
+        <span className="font-bold text-[var(--forest)]">{task.title}</span>
         <div className="flex gap-1 shrink-0">
           <button
             onClick={() =>
@@ -20,14 +20,14 @@ export default function SomedayItem({ task }: { task: { id: string; title: strin
               })
             }
             disabled={isPending}
-            className="text-xs px-2 py-1 rounded bg-neutral-900 text-white disabled:opacity-50"
+            className="jsg-button-primary px-3 py-1.5 text-xs disabled:opacity-50"
           >
             Activar como Next Action
           </button>
           <button
             onClick={() => startTransition(() => deleteTask(task.id))}
             disabled={isPending}
-            className="text-xs px-2 py-1 rounded text-red-600 disabled:opacity-50"
+            className="rounded-lg px-3 py-1.5 text-xs font-bold text-red-700 hover:bg-red-50 disabled:opacity-50"
           >
             Eliminar
           </button>
